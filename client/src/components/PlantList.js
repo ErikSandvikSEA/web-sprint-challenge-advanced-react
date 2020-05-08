@@ -49,11 +49,26 @@ export default class PlantList extends Component {
       })
     }
   
+    clearSearch = () => {
+      axios
+        .get(`http://localhost:3333/plants`)
+        .then(response => {
+          this.setState({
+            plants: response.data.plantsData,
+          })
+          // console.log(this.state.plants)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  
 
   /*********  DON'T CHANGE ANYTHING IN THE RENDER FUNCTION *********/
   render() {
     return (
       <main className="plant-list">
+        
         <label htmlFor='searchBar'>
         Search For Plants:
           <input 
@@ -61,11 +76,13 @@ export default class PlantList extends Component {
             id='searchBar'
             type='text'
             onChange={this.handleChange}
+            onSubmit={this.updateList}
           />
           <button
             onClick={this.updateList}
           >Search</button>
         </label>
+       
         {this.state?.plants?.map((plant) => (
           
           <div className="plant-card" key={plant.id}>
@@ -88,6 +105,13 @@ export default class PlantList extends Component {
             </div>
           </div>
         ))}
+        <label htmlFor='clearSearch'>
+
+         <button
+         id='searchBar'
+            onClick={this.clearSearch}
+          >Clear Search</button>
+          </label>
       </main>
     );
   }
