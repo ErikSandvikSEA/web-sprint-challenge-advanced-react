@@ -6,14 +6,13 @@ export default class PlantList extends Component {
   constructor() {
     super()
     this.state = {
-      plants: []
+      plants: [],
+      searchBar: '',
     }
   }
-
   // when the component mounts:
   //   - fetch data from the server endpoint - http://localhost:3333/plants
   //   - set the returned plants array to this.state.plants
-
   componentDidMount(){
     axios
       .get(`http://localhost:3333/plants`)
@@ -28,11 +27,47 @@ export default class PlantList extends Component {
       })
   }
 
+   handleChange = (event) => {
+    //     event.persist();
+        this.setState({
+            searchBar: event.target.value
+         });
+      };
+
+      componentDidUpdate(prevState) {
+        if(prevState.plants !== this.state.plants){ 
+        console.log(this.state)
+      }
+    }
+
+      updateList = () => {
+      let filteredSearchArray = this.state.plants.filter(plant => {
+        return plant.name === this.state.searchBar
+      })
+      this.setState({
+        plants: filteredSearchArray
+      })
+    }
+  
+
   /*********  DON'T CHANGE ANYTHING IN THE RENDER FUNCTION *********/
   render() {
     return (
       <main className="plant-list">
+        <label htmlFor='searchBar'>
+        Search For Plants:
+          <input 
+            name='searchBar'
+            id='searchBar'
+            type='text'
+            onChange={this.handleChange}
+          />
+          <button
+            onClick={this.updateList}
+          >Search</button>
+        </label>
         {this.state?.plants?.map((plant) => (
+          
           <div className="plant-card" key={plant.id}>
             <img className="plant-image" src={plant.img} alt={plant.name} />
             <div className="plant-details">
